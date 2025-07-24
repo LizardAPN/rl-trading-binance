@@ -127,6 +127,11 @@ rl_trading_binance/
 ├── replay_buffer.py       # Prioritized Replay (SumTree)
 ├── trading_environment.py # Gym-compatible env
 ├── utils.py               # Logging, plots, metrics
+├── data/                  # Market datasets (NPZ format)
+│   ├── train_data.npz
+│   ├── val_data.npz
+│   ├── test_data.npz
+│   └── backtest_data.npz
 ├── output/                # Experiment artifacts
 │   └── <config_name>/
 │       ├── logs/
