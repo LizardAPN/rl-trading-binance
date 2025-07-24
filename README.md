@@ -1,5 +1,3 @@
----
-
 # 🧠 Open RL Trading Agent for Binance Futures
 
 **Reinforcement Learning-based agent for intraday trading on Binance Futures**, built with D3QN + Prioritized Experience Replay. Designed for realistic backtesting, live trade decision-making, and reproducible experimentation.
