@@ -1,112 +1,105 @@
 # 🧠 Open RL Trading Agent for Binance Futures
 
-**Reinforcement Learning-based agent for intraday trading on Binance Futures**, built with D3QN + Prioritized Experience Replay. Designed for realistic backtesting, live trade decision-making, and reproducible experimentation.
+A high-performance, research-grade reinforcement learning system for intraday trading on Binance Futures. Built using Dueling Double Deep Q-Networks (D3QN) and Prioritized Experience Replay (PER), this framework supports realistic backtesting, robust benchmarking, and scalable experimentation.
+
+> ⚠️ **Note**: This release runs in demo mode with a lightweight ~256K-parameter model, short 10-minute sessions, and 30-minute input context — optimized for fast execution, CPU-only training, and interpretable visualizations. The full architecture (60-min sessions, 90-min context, 1M+ parameters) is still dormant. This project lays the foundation for a scalable, production-grade trading AI.
 
 ---
 
 ## 📌 Overview
 
-This repository provides a full-stack trading system built around a Deep Q-Learning agent trained on real Binance Futures minute-level data. It supports:
+This repository includes:
 
-* Realistic simulation of volatile trade sessions
-* Dueling Double DQN with Prioritized Replay Buffer
-* End-to-end pipeline: training, testing, backtesting, and hyperparameter tuning
-* Modular architecture with config-based reproducibility
+* ✅ A modular RL pipeline for market simulation and policy learning
+* ✅ A custom Gym-compatible environment with slippage, commissions, and penalties
+* ✅ A D3QN agent with PER buffer, epsilon decay, and action masking
+* ✅ A complete lifecycle: training, testing, backtesting, and baseline evaluation
+* ✅ An honest CNN classifier as a supervised baseline
+* ✅ Config-driven experiment isolation and reproducibility
 
-> **Demo Mode**: This version uses a lightweight model (\~256K params) with short sessions (10min) and minimal context (30min) for accessibility and fast execution. The full pipeline is GPU-free and runs on CPU.
+---
+
+## 🧠 Agent Architecture
+
+| Component       | Description                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Environment** | `TradingEnvironment`: simulates real-time market conditions with commissions, slippage, and partial observability |
+| **Model**       | CNN encoder with a dueling Q-head (Value + Advantage streams)                                                     |
+| **Agent**       | D3QN with epsilon-greedy exploration, PER sampling, target sync, and gradient clipping                            |
+| **Baseline**    | CNN classifier trained in supervised mode using the same architecture                                             |
+| **Backtester**  | Realistic simulation engine with signal tracking, execution filtering, and Optuna-powered config tuning           |
+
+---
+
+## 📈 Backtest Balance Curve
+
+A full equity curve over the backtest period (March–June 2025):
+
+![Backtest Balance Curve](plots/backtest_balance_curve.png)
 
 ---
 
 ## 📈 Performance Summary
 
-### 🔹 Test Results (RL Agent)
+### 🔹 RL Agent (Test Set)
 
-```
-Mean Reward:     0.00285
-Mean PnL:       +28.47 USDT
-Win Rate:       55.67%
-```
+* **Mean Reward**: 0.00285
+* **Mean PnL**: +28.47 USDT
+* **Win Rate**: 55.67%
 
-### 🔹 Backtest Results
+### 🔹 Backtest (Realistic Simulation)
 
-```
-Final Balance Change:  +144.23%
-Sharpe Ratio:          1.85
-Sortino Ratio:         2.05
-Accuracy:              69.6%
-Profit Days:           78.57%
-Max Drawdown:         -22.49%
-Avg Trade Amount:      11324.29 USDT
-Trades per Day:        2.00
-```
-
-![Backtest Balance Curve](plots/backtest_balance_curve.png)
+* **Final Balance Change**: +144.23%
+* **Sharpe Ratio**: 1.85
+* **Sortino Ratio**: 2.05
+* **Accuracy**: 69.6%
+* **Profit Days**: 78.57%
+* **Max Drawdown**: –22.49%
+* **Average Trade Size**: 11,324.29 USDT
+* **Trades per Day**: 2.00
 
 ### 🔹 Baseline (CNN Classifier)
 
-```
-Mean PnL:       –27.95 USDT
-Win Rate:        47.85%
-ROC AUC:         47.33%
-```
-
----
-
-## 🧠 Architecture
-
-* **Environment**: Custom Gym-compatible `TradingEnvironment`
-* **Agent**: D3QN with epsilon decay, PER buffer, and Q-value caching
-* **Model**: CNN feature extractor + Dueling head (Value + Advantage)
-* **Baseline**: Supervised CNN classifier with identical architecture
-* **Backtest**: Realistic execution, Q-value caching, risk-management, strategy filters
+* **Mean PnL**: –27.95 USDT
+* **Win Rate**: 47.85%
 
 ---
 
 ## 🧪 Dataset
 
-Curated minute-level dataset with high-volatility signals and trading sessions.
+A curated minute-level dataset from Binance Futures focused on high-volatility segments. Packaged in `.npz` format.
 
-| Set      | Period                  | Size   | Purpose    |
-| -------- | ----------------------- | ------ | ---------- |
-| Train    | 2020-01-14 → 2024-08-31 | 24,104 | Training   |
-| Val      | 2024-09-01 → 2024-12-01 | 1,377  | Validation |
-| Test     | 2024-12-01 → 2025-03-01 | 3,400  | Evaluation |
-| Backtest | 2025-03-01 → 2025-06-01 | 3,186  | Simulation |
+Each session contains 60 minutes of market activity and serves as a standalone trading window.
 
-🔗 [open-rl-trading-binance-dataset (HuggingFace)](https://huggingface.co/datasets/ResearchRL/open-rl-trading-binance-dataset)
+
+| Split      | Period                  | Sessions | Purpose              |
+| ---------- | ----------------------- | -------- | -------------------- |
+| Train      | 2020-01-14 → 2024-08-31 | 24,104   | RL training          |
+| Validation | 2024-09-01 → 2024-12-01 | 1,377    | Model selection      |
+| Test       | 2024-12-01 → 2025-03-01 | 3,400    | Final evaluation     |
+| Backtest   | 2025-03-01 → 2025-06-01 | 3,186    | Realistic simulation |
+
+📂 Dataset: [HuggingFace Hub](https://huggingface.co/datasets/ResearchRL/open-rl-trading-binance-dataset)
 
 ---
 
 ## 🚀 Quickstart
 
-### 1. Train the agent
-
 ```bash
-python train.py configs/alpha.py
-```
+# 1. Train the RL agent
+python train.py configs/alpha_buffer_size_10k.py
 
-### 2. Evaluate on test set
+# 2. Evaluate on the test set
+python test_agent.py configs/alpha_buffer_size_10k.py
 
-```bash
-python test_agent.py configs/alpha.py
-```
+# 3. Run realistic backtest
+python backtest_engine.py configs/alpha_buffer_size_10k.py
 
-### 3. Backtest on real market signals
-
-```bash
-python backtest_engine.py configs/alpha.py
-```
-
-### 4. Run CNN baseline
-
-```bash
+# 4. Train supervised CNN baseline
 python baseline_cnn_classifier.py configs/alpha_baseline_cnn.py
-```
 
-### 5. Optimize backtest config (Optuna)
-
-```bash
-python optimize_cfg.py configs/alpha.py --trials 100 --jobs 1
+# 5. Run Optuna config optimization
+python optimize_cfg.py configs/alpha_buffer_size_10k.py --trials 100 --jobs 4
 ```
 
 ---
@@ -116,23 +109,23 @@ python optimize_cfg.py configs/alpha.py --trials 100 --jobs 1
 ```
 rl_trading_binance/
 ├── train.py               # RL training
-├── test_agent.py          # Testing agent
-├── backtest_engine.py     # Full backtest engine
-├── optimize_cfg.py        # Optuna-based optimization
+├── test_agent.py          # Agent evaluation
+├── backtest_engine.py     # Full backtest simulation
+├── optimize_cfg.py        # Optuna config tuning
 ├── baseline_cnn_classifier.py
-├── config.py              # Config base model
+├── config.py              # Config model
 ├── configs/               # Experiment configs
 ├── model.py               # CNN + Dueling Q-network
-├── agent.py               # D3QN agent logic
-├── replay_buffer.py       # Prioritized Replay (SumTree)
-├── trading_environment.py # Gym-compatible env
-├── utils.py               # Logging, plots, metrics
-├── data/                  # Market datasets (NPZ format)
+├── agent.py               # D3QN logic
+├── replay_buffer.py       # Prioritized replay buffer
+├── trading_environment.py # Gym-compatible environment
+├── utils.py               # Logging, visualization, metrics
+├── data/                  # Market datasets (.npz format)
 │   ├── train_data.npz
 │   ├── val_data.npz
 │   ├── test_data.npz
 │   └── backtest_data.npz
-├── output/                # Experiment artifacts
+├── output/                # Experiment results
 │   └── <config_name>/
 │       ├── logs/
 │       ├── plots/
@@ -147,50 +140,69 @@ rl_trading_binance/
 | ----------------------------------- | ------------------------------------- |
 | ![](plots/profitable_session_1.png) | ![](plots/unprofitable_session_1.png) |
 
-
-| Train Example                                             | Val Example                                               | Test Example                                              | Backtest Example                                           |
-|-----------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|
-| ![](plots/Train_example_ZENUSDT_2021-02-22_14-15.png)     | ![](plots/Val_example_BEAMXUSDT_2024-09-04_01-05.png)     | ![](plots/Test_example_LINKUSDC_2025-01-20_13-16.png)     | ![](plots/Backtest_example_SKLUSDT_2025-04-22_22-56.png)   |
-
-
----
+| Train Example                                         | Val Example                                           | Test Example                                          | Backtest Example                                         |
+| ----------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------- |
+| ![](plots/Train_example_ZENUSDT_2021-02-22_14-15.png) | ![](plots/Val_example_BEAMXUSDT_2024-09-04_01-05.png) | ![](plots/Test_example_LINKUSDC_2025-01-20_13-16.png) | ![](plots/Backtest_example_SKLUSDT_2025-04-22_22-56.png) |
 
 ---
 
 ## 📣 Live Agent (Telegram Bot)
 
-A more advanced real-time AI agent has been deployed and is actively analyzing Binance Futures markets.
+A more advanced version of this agent is deployed live, scanning Binance Futures in real-time and publishing trade decisions:
 
-Every minute it:
+* Scans all symbols every minute
+* Detects volatility spikes
+* Predicts trade direction and confidence
+* Publishes signal + final trade outcome with PnL
 
-* Monitors all tickers for major volatility shifts
-* Detects and posts new trading signals with confidence levels
-* Tracks signal evolution and verifies prediction outcomes
-* Publishes both open and closed positions along with PnL
+This is a public demonstration of production-oriented RL decision-making in streaming environments.
 
-This system is a live demonstration of how reinforcement learning can operate under production constraints with streaming data and discrete decision-making.
-
-👉 Follow here: [@binance\_ai\_agent](https://t.me/binance_ai_agent)
-
-> ⚠️ Educational use only. No financial advice.
+👉 Follow: [@binance\_ai\_agent](https://t.me/binance_ai_agent)
 
 | Live Signal + Prediction              | Verification Example             |
 | ------------------------------------- | -------------------------------- |
 | ![](plots/new_signal_update_pred.jpg) | ![](plots/pred_verification.jpg) |
 
----
-
-## 🧭 Future Work
-
-* Switch to iTransformer / Perceiver / A3C / PPO / SAC / Dreamer / DDPG / TD3
-* Longer context: 90min + 60min sessions
-* Streamed execution via Binance API + TimescaleDB + Airflow
+> ⚠️ This system is experimental and for educational purposes only.
 
 ---
 
-## ⚖️ License
+## 🎯 Demo vs Full Pipeline
 
-MIT License
+| Feature          | Demo Mode (This Repo) | Full System (Production Scope)     |
+| ---------------- | --------------------- | ---------------------------------- |
+| Session Length   | 10 minutes            | 60 minutes                         |
+| Input Context    | 30 minutes            | 90+ minutes                        |
+| Model Size       | \~256K parameters     | 1M+ (Transformer-based)            |
+| Hardware         | CPU-only              | GPU/TPU-accelerated                |
+| Execution Engine | Backtesting only      | Live order execution (Binance API) |
+| Data Stream      | Static `.npz`         | Real-time WebSocket + DB           |
 
 ---
 
+## 🧭 Roadmap
+
+- [ ] Replace CNN with iTransformer / Perceiver IO / Temporal Fusion Transformer (TFT)
+- [ ] Integrate Model-Based RL (Dreamer, MuZero)
+- [ ] Extend agent architectures: A3C / PPO / SAC / DDPG / TD3
+- [ ] Real-time trade execution via Binance REST & WebSocket API
+- [ ] Implement adaptive action masking + dynamic risk management
+- [ ] Build full streaming pipeline with Airflow + TimescaleDB
+- [ ] Enable live training on streamed data
+- [ ] Expand exchange compatibility: integrate Bybit, OKX, and KuCoin APIs
+- [ ] Support both Futures and Spot markets across multiple crypto exchanges
+- [ ] Extend to traditional markets: equities (NASDAQ, NYSE) and major Forex pairs
+
+---
+
+## 🔐 License
+
+Licensed under the MIT License — free for commercial and non-commercial use. Attribution is appreciated.
+
+---
+
+## 🙋‍♂️ Author
+
+Developed by [@YuriyKolesnikov](https://github.com/YuriyKolesnikov)
+
+> For integration, research collaboration, or consulting — feel free to reach out.
