@@ -139,6 +139,7 @@ rl_trading_binance/
 | Profitable Session                  | Unprofitable Session                  |
 | ----------------------------------- | ------------------------------------- |
 | ![](plots/profitable_session_1.png) | ![](plots/unprofitable_session_1.png) |
+| ![](plots/profitable_session_2.png) | ![](plots/unprofitable_session_2.png) |
 
 | Train Example                                         | Val Example                                           | Test Example                                          | Backtest Example                                         |
 | ----------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------- |
