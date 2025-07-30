@@ -8,6 +8,9 @@ A high-performance, research-grade reinforcement learning system for intraday tr
 
 ## 📌 Overview
 
+📖 Read the full technical article:  
+[RL Agent for Algorithmic Trading on Binance Futures — Architecture, Backtest, and Results](https://medium.com/@YuriKolesnikovAI/rl-agent-for-algorithmic-trading-on-binance-futures-architecture-backtest-and-results-63fc4662893d)
+
 This repository includes:
 
 * ✅ A modular RL pipeline for market simulation and policy learning
