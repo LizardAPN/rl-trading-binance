@@ -13,7 +13,7 @@ from typing import List, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
-from crypto_utils.utils import millify
+from utils import millify
 from sklearn.metrics import roc_auc_score
 from torch import Tensor
 from torch.nn.utils import clip_grad_norm_

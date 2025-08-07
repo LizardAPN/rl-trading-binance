@@ -9,7 +9,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
-from crypto_utils.utils import millify
+from utils import millify
 
 from model import DuelingQNetwork
 from replay_buffer import PrioritizedReplayBuffer
