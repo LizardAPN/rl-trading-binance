@@ -93,19 +93,19 @@ Each session contains 60 minutes of market activity and serves as a standalone t
 
 ```bash
 # 1. Train the RL agent
-python train.py configs/alpha_buffer_size_10k.py
+python train.py configs/alpha.py
 
 # 2. Evaluate on the test set
-python test_agent.py configs/alpha_buffer_size_10k.py
+python test_agent.py configs/alpha.py
 
 # 3. Run realistic backtest
-python backtest_engine.py configs/alpha_buffer_size_10k.py
+python backtest_engine.py configs/alpha.py
 
 # 4. Train supervised CNN baseline
 python baseline_cnn_classifier.py configs/alpha_baseline_cnn.py
 
 # 5. Run Optuna config optimization
-python optimize_cfg.py configs/alpha_buffer_size_10k.py --trials 100 --jobs 4
+python optimize_cfg.py configs/alpha.py --trials 100 --jobs 1
 ```
 
 ---
