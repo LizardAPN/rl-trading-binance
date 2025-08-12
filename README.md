@@ -202,6 +202,51 @@ This is a public demonstration of production-oriented RL decision-making in stre
 
 ---
 
+## 📚 Citation
+
+If this project helps your research, please cite:
+
+```bibtex
+@software{Kolesnikov_2025_RL_Trading_Binance,
+  author    = {Yuriy Kolesnikov},
+  title     = {Open RL Trading Agent for Binance Futures (D3QN + PER)},
+  year      = {2025},
+  publisher = {GitHub},
+  url       = {https://github.com/YuriyKolesnikov/rl-trading-binance},
+  version   = {0.1.0}
+}
+```
+
+Key methods referenced in this repository:
+
+```bibtex
+@inproceedings{vanHasselt2015DoubleDQN,
+  title={Deep Reinforcement Learning with Double Q-learning},
+  author={Hado van Hasselt and Arthur Guez and David Silver},
+  booktitle={AAAI},
+  year={2016},
+  url={https://arxiv.org/abs/1509.06461}
+}
+
+@inproceedings{Wang2016Dueling,
+  title={Dueling Network Architectures for Deep Reinforcement Learning},
+  author={Ziyu Wang and Tom Schaul and Matteo Hessel and Hado van Hasselt and Marc Lanctot and Nando de Freitas},
+  booktitle={ICML},
+  year={2016},
+  url={https://proceedings.mlr.press/v48/wangf16.html}
+}
+
+@inproceedings{Schaul2016PER,
+  title={Prioritized Experience Replay},
+  author={Tom Schaul and John Quan and Ioannis Antonoglou and David Silver},
+  booktitle={ICLR},
+  year={2016},
+  url={https://arxiv.org/abs/1511.05952}
+}
+```
+
+---
+
 ## 🔐 License
 
 Licensed under the MIT License — free for commercial and non-commercial use. Attribution is appreciated.
