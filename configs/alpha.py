@@ -65,11 +65,15 @@ cfg.debug.use_final_model = False
 # Mini run with 10 short sessions
 # python optimize_cfg.py configs/alpha.py --trials 100 --jobs 1
 
+# Notes: Default metric is values_0; default direction is max.
+# python get_info_from_optuna.py configs/alpha.py --n-best-trials 10
+
 # rm -r output/alpha
 
 # Main workflow:
-# Step                   Command
-# 1. Train the model:    python train.py configs/...
-# 2. Update the cache:   python backtest_engine.py configs/...  | When running a backtest, set backtest_mode = True
-# 3. Run optimization:   python optimize_cfg.py configs/...
+# Step                              Command
+# 1. Train the model:               python train.py configs/...
+# 2. Update the cache:              python backtest_engine.py configs/...  | When running a backtest, set backtest_mode = True
+# 3. Run optimization:              python optimize_cfg.py configs/...
+# 4. Show and save top-n trials:    python get_info_from_optuna.py configs/...
 
