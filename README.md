@@ -8,8 +8,11 @@ A high-performance, research-grade reinforcement learning system for intraday tr
 
 ## 📌 Overview
 
-📖 Read the full technical article:  
+📖 Read the full technical article (English):  
 [RL Agent for Algorithmic Trading on Binance Futures — Architecture, Backtest, and Results](https://medium.com/@YuriKolesnikovAI/rl-agent-for-algorithmic-trading-on-binance-futures-architecture-backtest-and-results-63fc4662893d)
+
+📖 Article (Russian):  
+[RL-агент для алгоритмической торговли на Binance Futures: архитектура, бэктест, результаты](https://habr.com/ru/articles/934258/)
 
 This repository includes:
 
@@ -90,19 +93,25 @@ Each session contains 60 minutes of market activity and serves as a standalone t
 
 ```bash
 # 1. Train the RL agent
-python train.py configs/alpha_buffer_size_10k.py
+python train.py configs/alpha.py
 
 # 2. Evaluate on the test set
-python test_agent.py configs/alpha_buffer_size_10k.py
+python test_agent.py configs/alpha.py
 
 # 3. Run realistic backtest
-python backtest_engine.py configs/alpha_buffer_size_10k.py
+python backtest_engine.py configs/alpha.py
 
 # 4. Train supervised CNN baseline
 python baseline_cnn_classifier.py configs/alpha_baseline_cnn.py
 
 # 5. Run Optuna config optimization
-python optimize_cfg.py configs/alpha_buffer_size_10k.py --trials 100 --jobs 4
+python optimize_cfg.py configs/alpha.py --trials 100 --jobs 1
+
+# 6. Show and save top-10 trials for a given config
+python get_info_from_optuna.py configs/alpha.py --n-best-trials 10
+
+# 7. If your objective is minimized
+python get_info_from_optuna.py configs/alpha.py --n-best-trials 10 --direction min
 ```
 
 ---
@@ -196,6 +205,51 @@ This is a public demonstration of production-oriented RL decision-making in stre
 - [ ] Expand exchange compatibility: integrate Bybit, OKX, and KuCoin APIs
 - [ ] Support both Futures and Spot markets across multiple crypto exchanges
 - [ ] Extend to traditional markets: equities (NASDAQ, NYSE) and major Forex pairs
+
+---
+
+## 📚 Citation
+
+If this project helps your research, please cite:
+
+```bibtex
+@software{Kolesnikov_2025_RL_Trading_Binance,
+  author    = {Yuriy Kolesnikov},
+  title     = {Open RL Trading Agent for Binance Futures (D3QN + PER)},
+  year      = {2025},
+  publisher = {GitHub},
+  url       = {https://github.com/YuriyKolesnikov/rl-trading-binance},
+  version   = {0.1.0}
+}
+```
+
+Key methods referenced in this repository:
+
+```bibtex
+@inproceedings{vanHasselt2015DoubleDQN,
+  title={Deep Reinforcement Learning with Double Q-learning},
+  author={Hado van Hasselt and Arthur Guez and David Silver},
+  booktitle={AAAI},
+  year={2016},
+  url={https://arxiv.org/abs/1509.06461}
+}
+
+@inproceedings{Wang2016Dueling,
+  title={Dueling Network Architectures for Deep Reinforcement Learning},
+  author={Ziyu Wang and Tom Schaul and Matteo Hessel and Hado van Hasselt and Marc Lanctot and Nando de Freitas},
+  booktitle={ICML},
+  year={2016},
+  url={https://proceedings.mlr.press/v48/wangf16.html}
+}
+
+@inproceedings{Schaul2016PER,
+  title={Prioritized Experience Replay},
+  author={Tom Schaul and John Quan and Ioannis Antonoglou and David Silver},
+  booktitle={ICLR},
+  year={2016},
+  url={https://arxiv.org/abs/1511.05952}
+}
+```
 
 ---
 
