@@ -11,3 +11,7 @@ __pycache__/
 *.npz
 output/
 data/
+
+# Environmemt
+.venv/
+.env
