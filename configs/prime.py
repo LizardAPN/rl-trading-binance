@@ -8,8 +8,8 @@ ACTION_HISTORY_LEN = 3
 cfg.model.cnn_maps = [32, 64, 128]
 cfg.model.cnn_kernels = [7, 5, 3]
 cfg.model.cnn_strides = [2, 1, 1]
-cfg.model.dense_val = [512, 256, 128, 64]
-cfg.model.dense_adv = [512, 256, 128, 64]
+cfg.model.dense_val = [256, 128, 64]
+cfg.model.dense_adv = [256, 128, 64]
 # 4 + action_history_len * num_actions
 cfg.model.additional_feats = 4 + ACTION_HISTORY_LEN * 4
 # 0 ≤ p < 0.5; typical values are 0.1–0.2
