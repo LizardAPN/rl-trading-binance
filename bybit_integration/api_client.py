@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 import aiohttp
 import requests
 
-from .config import BybitAPIConfig
+from config import BybitAPIConfig
 
 
 class BybitAPIClient:
@@ -149,7 +149,7 @@ class BybitAPIClient:
             Баланс кошелька
         """
         params = {'coin': coin} if coin else {}
-        return self._make_request('GET', '/v5/wallet/balance', params=params, is_private=True)
+        return self._make_request('GET', '/v5/account/wallet-balance', params=params, is_private=True)
     
     def get_tickers(self, category: str = "linear") -> Dict[str, Any]:
         """
@@ -451,7 +451,7 @@ class AsyncBybitAPIClient(BybitAPIClient):
     async def get_wallet_balance(self, coin: str = "USDT") -> Dict[str, Any]:
         """Асинхронное получение баланса кошелька"""
         params = {'coin': coin} if coin else {}
-        return await self._make_async_request('GET', '/v5/wallet/balance', params=params, is_private=True)
+        return await self._make_async_request('GET', '/v5/account/wallet-balance', params=params, is_private=True)
     
     async def get_tickers(self, category: str = "linear") -> Dict[str, Any]:
         """Асинхронное получение информации о ценах тикеров"""

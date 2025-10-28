@@ -10,7 +10,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import pandas as pd
 
-from .config import DatabaseConfig
+from config import DatabaseConfig
 
 
 class DatabaseManager:
@@ -46,6 +46,7 @@ class DatabaseManager:
         """
         Контекстный менеджер для получения соединения с базой данных
         """
+        print(f"Database config: host={self.config.host}, db={self.config.database}, user={self.config.username}, password_provided={bool(self.config.password)}")
         conn = None
         try:
             conn = psycopg2.connect(
@@ -75,7 +76,6 @@ class DatabaseManager:
                     # Создание таблицы для рыночных данных
                     cur.execute("""
                         CREATE TABLE IF NOT EXISTS market_data (
-                            id SERIAL PRIMARY KEY,
                             timestamp TIMESTAMPTZ NOT NULL,
                             symbol VARCHAR(20) NOT NULL,
                             open_price DECIMAL(20, 8),
@@ -84,11 +84,12 @@ class DatabaseManager:
                             close_price DECIMAL(20, 8),
                             volume DECIMAL(20, 8),
                             trades_count INTEGER,
-                            created_at TIMESTAMPTZ DEFAULT NOW()
+                            created_at TIMESTAMPTZ DEFAULT NOW(),
+                            PRIMARY KEY (timestamp, symbol)  
                         );
                     """)
                     
-                    # Создание hypertable для TimescaleDB (если включено)
+                    # Создание hypertable для TimescaleDB
                     if self.config.timescaledb_enabled:
                         cur.execute("""
                             SELECT create_hypertable('market_data', 'timestamp', if_not_exists => TRUE);
@@ -103,7 +104,6 @@ class DatabaseManager:
                     # Создание таблицы для метрик торговли
                     cur.execute("""
                         CREATE TABLE IF NOT EXISTS trading_metrics (
-                            id SERIAL PRIMARY KEY,
                             timestamp TIMESTAMPTZ NOT NULL,
                             symbol VARCHAR(20) NOT NULL,
                             strategy_name VARCHAR(100),
@@ -115,11 +115,12 @@ class DatabaseManager:
                             pnl_percentage DECIMAL(10, 4),
                             commission DECIMAL(20, 8),
                             trade_duration INTERVAL,
-                            created_at TIMESTAMPTZ DEFAULT NOW()
+                            created_at TIMESTAMPTZ DEFAULT NOW(),
+                            PRIMARY KEY (timestamp, symbol)
                         );
                     """)
                     
-                    # Создание hypertable для TimescaleDB (если включено)
+                    # Создание hypertable для TimescaleDB
                     if self.config.timescaledb_enabled:
                         cur.execute("""
                             SELECT create_hypertable('trading_metrics', 'timestamp', if_not_exists => TRUE);
@@ -134,16 +135,16 @@ class DatabaseManager:
                     # Создание таблицы для системных метрик
                     cur.execute("""
                         CREATE TABLE IF NOT EXISTS system_metrics (
-                            id SERIAL PRIMARY KEY,
                             timestamp TIMESTAMPTZ NOT NULL,
                             metric_name VARCHAR(100) NOT NULL,
                             metric_value DECIMAL(20, 8),
                             tags JSONB,
-                            created_at TIMESTAMPTZ DEFAULT NOW()
+                            created_at TIMESTAMPTZ DEFAULT NOW(),
+                            PRIMARY KEY (timestamp, metric_name) 
                         );
                     """)
                     
-                    # Создание hypertable для TimescaleDB (если включено)
+                    # Создание hypertable для TimescaleDB
                     if self.config.timescaledb_enabled:
                         cur.execute("""
                             SELECT create_hypertable('system_metrics', 'timestamp', if_not_exists => TRUE);

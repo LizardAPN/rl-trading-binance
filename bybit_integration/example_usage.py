@@ -9,8 +9,8 @@ import time
 from datetime import datetime
 import numpy as np
 
-from .config import BybitIntegrationConfig
-from .trader import BybitTrader
+from config import BybitIntegrationConfig
+from trader import BybitTrader
 
 
 # Настройка логирования

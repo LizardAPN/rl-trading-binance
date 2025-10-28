@@ -9,9 +9,9 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime, timedelta
 import numpy as np
 
-from .api_client import BybitAPIClient, AsyncBybitAPIClient
-from .config import BybitIntegrationConfig
-from .database import DatabaseManager
+from api_client import BybitAPIClient, AsyncBybitAPIClient
+from config import BybitIntegrationConfig
+from database import DatabaseManager
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
