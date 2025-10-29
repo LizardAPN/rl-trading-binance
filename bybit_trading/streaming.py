@@ -165,7 +165,33 @@ class BybitDataStream:
             if isinstance(message, str):
                 message = json.loads(message)
             
-            topic = message.get('topic', '')
+            # Debug: Log the type and content of the message
+            logger.debug(f"Received message type: {type(message)}, content: {message}")
+            
+            # Handle list messages (multiple klines in one message)
+            if isinstance(message, list):
+                # Process each item in the list
+                for item in message:
+                    await self._process_single_message(item)
+                return
+            
+            # Handle single message
+            await self._process_single_message(message)
+            
+        except Exception as e:
+            logger.error(f"Error handling message: {str(e)}")
+            if self.on_error_callback:
+                self.on_error_callback(e)
+    
+    async def _process_single_message(self, message: Dict[str, Any]):
+        """
+        Process a single WebSocket message
+        
+        Args:
+            message: Single message data
+        """
+        try:
+            topic = message.get('topic', '') if isinstance(message, dict) else ''
             
             # Handle kline data
             if topic.startswith('kline'):
@@ -200,6 +226,14 @@ class BybitDataStream:
             dict: Parsed kline data
         """
         try:
+            # Debug: Log the type and content of the message
+            logger.debug(f"Parsing kline message type: {type(message)}, content: {message}")
+            
+            # Check if message is a dictionary
+            if not isinstance(message, dict):
+                logger.error(f"Expected dict message but got {type(message)}: {message}")
+                return None
+                
             topic = message.get('topic', '')
             data = message.get('data', {})
             
