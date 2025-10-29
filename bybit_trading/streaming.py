@@ -86,7 +86,13 @@ class BybitDataStream:
             
             logger.info(f"Connecting to Bybit WebSocket at {url}")
             
-            # Initialize WebSocket with callback
+            # Initialize WebSocket
+            self.ws = WebSocket(
+                testnet=testnet,
+                channel_type="linear"
+            )
+            
+            # Define callback function for handling messages
             def ws_callback(message):
                 # This callback will be called when messages arrive
                 # We need to handle the message appropriately
@@ -94,18 +100,12 @@ class BybitDataStream:
                     # Schedule the async callback
                     asyncio.create_task(self._handle_message(message))
             
-            self.ws = WebSocket(
-                testnet=testnet,
-                channel_type="linear",
-                callback=ws_callback
-            )
-            
             # Subscribe to kline topics for all symbols
             for symbol in self.symbols:
                 # Subscribe to 1-minute klines
-                self.ws.subscribe(topic="kline.1." + symbol, callback=ws_callback)
+                self.ws.kline_stream(interval=1, symbol=symbol, callback=ws_callback)
                 # Subscribe to 5-minute klines
-                self.ws.subscribe(topic="kline.5." + symbol, callback=ws_callback)
+                self.ws.kline_stream(interval=5, symbol=symbol, callback=ws_callback)
             
             self.running = True
             self.reconnect_attempts = 0
@@ -119,8 +119,8 @@ class BybitDataStream:
         except Exception as e:
             logger.error(f"Error connecting to WebSocket: {str(e)}")
             if self.on_error_callback:
-                # Schedule the async callback
-                asyncio.create_task(self._call_error_callback(e))
+                # Call the error callback directly
+                self.on_error_callback(e)
             raise
     
     async def _listen(self):
