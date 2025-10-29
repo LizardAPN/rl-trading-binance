@@ -86,33 +86,41 @@ class BybitDataStream:
             
             logger.info(f"Connecting to Bybit WebSocket at {url}")
             
-            # Initialize WebSocket
+            # Initialize WebSocket with callback
+            def ws_callback(message):
+                # This callback will be called when messages arrive
+                # We need to handle the message appropriately
+                if self.on_message_callback:
+                    # Schedule the async callback
+                    asyncio.create_task(self._handle_message(message))
+            
             self.ws = WebSocket(
                 testnet=testnet,
-                channel_type="linear"
+                channel_type="linear",
+                callback=ws_callback
             )
             
             # Subscribe to kline topics for all symbols
-            topics = []
             for symbol in self.symbols:
                 # Subscribe to 1-minute klines
-                topics.append(f"kline.1.{symbol}")
+                self.ws.subscribe(topic="kline.1." + symbol, callback=ws_callback)
                 # Subscribe to 5-minute klines
-                topics.append(f"kline.5.{symbol}")
+                self.ws.subscribe(topic="kline.5." + symbol, callback=ws_callback)
             
-            self.ws.subscribe(topics)
             self.running = True
             self.reconnect_attempts = 0
             
-            logger.info(f"Subscribed to topics: {topics}")
+            logger.info(f"Subscribed to kline topics for symbols: {self.symbols}")
             
-            # Start listening for messages
-            await self._listen()
+            # Keep the connection alive
+            while self.running and self.ws:
+                await asyncio.sleep(1)
             
         except Exception as e:
             logger.error(f"Error connecting to WebSocket: {str(e)}")
             if self.on_error_callback:
-                self.on_error_callback(e)
+                # Schedule the async callback
+                asyncio.create_task(self._call_error_callback(e))
             raise
     
     async def _listen(self):
