@@ -73,8 +73,18 @@ class BybitTradingEngine:
                 config=bybit_config
             )
             
+            # Determine symbols to use
+            final_symbols = self.symbols
+            if self.config.get("use_all_symbols", False):
+                logger.info("Fetching all available symbols...")
+                all_symbols = await self.execution.get_all_symbols()
+                final_symbols = all_symbols
+                logger.info(f"Using all {len(final_symbols)} available symbols")
+            else:
+                logger.info(f"Using configured symbols: {final_symbols}")
+            
             # Initialize data stream
-            self.data_stream = BybitDataStream(symbols=self.symbols)
+            self.data_stream = BybitDataStream(symbols=final_symbols)
             
             # Initialize monitoring
             telegram_notifier = TelegramNotifier(

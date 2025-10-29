@@ -107,6 +107,7 @@ async def main():
     engine_config = {
         "check_interval": getattr(cfg.live_trading, "check_interval", 60),
         "max_position_pct": getattr(cfg.live_trading, "max_position_pct", 0.1),
+        "use_all_symbols": getattr(cfg.live_trading, "use_all_symbols", False),
         "telegram_bot_token": os.getenv("TELEGRAM_BOT_TOKEN", ""),
         "telegram_chat_id": os.getenv("TELEGRAM_CHAT_ID", "")
     }

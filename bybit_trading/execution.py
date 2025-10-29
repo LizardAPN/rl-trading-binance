@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import math
 
 from pybit.unified_trading import HTTP
@@ -304,3 +304,36 @@ class BybitExecution:
         except Exception as e:
             logger.error(f"Error cancelling orders for {symbol}: {str(e)}")
             return {"status": "error", "message": str(e)}
+    
+    async def get_all_symbols(self) -> List[str]:
+        """
+        Get all available USDT perpetual contract symbols from Bybit
+        
+        Returns:
+            list: List of available symbol names
+        """
+        try:
+            # Use a separate session without authentication for public endpoints
+            public_session = HTTP(testnet=TradingMode.is_testnet(self.mode))
+            
+            response = await self._retry_with_backoff(
+                lambda: public_session.get_instruments_info(category="linear")
+            )
+            
+            if response.get("retCode") != 0:
+                raise Exception(f"Failed to get instruments info: {response.get('retMsg')}")
+            
+            symbols = response.get("result", {}).get("list", [])
+            
+            # Filter for USDT perpetual contracts that are currently trading
+            usdt_contracts = [
+                symbol.get("symbol") for symbol in symbols 
+                if symbol.get("quoteCoin") == "USDT" and symbol.get("status") == "Trading"
+            ]
+            
+            logger.info(f"Fetched {len(usdt_contracts)} USDT perpetual contracts")
+            return usdt_contracts
+            
+        except Exception as e:
+            logger.error(f"Error fetching all symbols: {str(e)}")
+            raise

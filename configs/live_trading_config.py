@@ -6,6 +6,7 @@ class LiveTradingConfig(BaseModel):
     enabled: bool = True
     mode: str = "demo"  # demo/paper/live
     symbols: List[str] = ["BTCUSDT", "ETHUSDT", "SOLUSDT"]
+    use_all_symbols: bool = False  # If True, fetch all available symbols dynamically
     check_interval: int = 60  # seconds
     max_position_pct: float = 0.1
     telegram_alerts: bool = True
