@@ -316,7 +316,9 @@ class BybitExecution:
             # Use a separate session without authentication for public endpoints
             public_session = HTTP(testnet=TradingMode.is_testnet(self.mode))
             
-            response = await self._retry_with_backoff(
+            # Execute the synchronous API call in a thread pool to avoid blocking
+            response = await asyncio.get_event_loop().run_in_executor(
+                None,
                 lambda: public_session.get_instruments_info(category="linear")
             )
             
