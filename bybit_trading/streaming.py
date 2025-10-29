@@ -92,13 +92,19 @@ class BybitDataStream:
                 channel_type="linear"
             )
             
+            # Store reference to the event loop
+            self._loop = asyncio.get_running_loop()
+            
             # Define callback function for handling messages
             def ws_callback(message):
                 # This callback will be called when messages arrive
                 # We need to handle the message appropriately
                 if self.on_message_callback:
-                    # Schedule the async callback
-                    asyncio.create_task(self._handle_message(message))
+                    # Use the stored event loop to schedule the async callback
+                    asyncio.run_coroutine_threadsafe(
+                        self._handle_message(message), 
+                        self._loop
+                    )
             
             # Subscribe to kline topics for all symbols
             for symbol in self.symbols:
