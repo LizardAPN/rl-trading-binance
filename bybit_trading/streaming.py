@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Callable
 from collections import deque
 
 import websockets
-from pybit.websocket import WebSocket
+from pybit.unified_trading import WebSocket
 
 logger = logging.getLogger(__name__)
 

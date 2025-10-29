@@ -2,3 +2,5 @@
 2025-10-29 12:40:02,455 - __main__ - ERROR - Failed to load configuration: "MasterConfig" object has no field "live_trading"
 2025-10-29 13:13:44,777 - __main__ - ERROR - Error loading config from configs/live_trading.py: "MasterConfig" object has no field "live_trading"
 2025-10-29 13:13:44,777 - __main__ - ERROR - Failed to load configuration: "MasterConfig" object has no field "live_trading"
+2025-10-29 14:01:58,534 - __main__ - ERROR - Error loading config from configs/live_trading.py: "MasterConfig" object has no field "live_trading"
+2025-10-29 14:01:58,534 - __main__ - ERROR - Failed to load configuration: "MasterConfig" object has no field "live_trading"
