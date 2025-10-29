@@ -191,7 +191,15 @@ class BybitDataStream:
             message: Single message data
         """
         try:
-            topic = message.get('topic', '') if isinstance(message, dict) else ''
+            # Debug: Log the type and content of the message
+            logger.debug(f"Processing single message type: {type(message)}, content: {message}")
+            
+            # Check if message is a dictionary
+            if not isinstance(message, dict):
+                logger.error(f"Expected dict message but got {type(message)}: {message}")
+                return
+                
+            topic = message.get('topic', '')
             
             # Handle kline data
             if topic.startswith('kline'):
