@@ -5,6 +5,8 @@ from typing import List, Literal, Optional
 import torch
 from pydantic import BaseModel, Field, validator
 
+from configs.live_trading_config import LiveTradingConfig
+
 
 class DeviceConfig(BaseModel):
     device: torch.device = Field(default_factory=lambda: torch.device("cuda" if torch.cuda.is_available() else "cpu"))
@@ -227,6 +229,7 @@ class MasterConfig(BaseModel):
     smart: SmartExplorationConfig = SmartExplorationConfig()
     backtest: BacktestConfig = BacktestConfig()
     logging: LoggingConfig = LoggingConfig()
+    live_trading: LiveTradingConfig = LiveTradingConfig()
 
 
 cfg = MasterConfig()
